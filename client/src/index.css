@@ -1,0 +1,35 @@
+@import "tailwindcss";
+
+:root {
+  --color-primary: #F84565;
+  --color-primary-dull: #D63854;
+}
+
+* {
+  font-family: "Roboto", sans-serif;
+}
+
+body {
+  color: white;
+  background-color: #09090B;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+.btn-color {
+  background-color: var(--color-primary-dull);
+}
+
+/* Remove number input arrows */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Fix calendar icon color */
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
