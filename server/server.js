@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import connectDB from './configs/db.js';
 import { clerkMiddleware } from '@clerk/express';
 import { serve } from "inngest/express";
-import { inngest } from "./inngest/index.js";
+import { Inngest } from "inngest";
 
 dotenv.config();
 
@@ -16,13 +16,27 @@ app.use(clerkMiddleware());
 
 app.get('/', (req, res) => res.send('Server is live!'));
 
+// Inngest client
+const inngest = new Inngest({ id: "quickshow-app" });
+
+// Inngest function (simple test function)
+const testFunction = inngest.createFunction(
+  { id: "test-function" },
+  { event: "test/event" },
+  async ({ event }) => {
+    console.log("Event received:", event);
+    return { message: "Inngest working 🚀" };
+  }
+);
+
+// Inngest route
 app.use('/api/inngest', serve({
   client: inngest,
-  functions: []
+  functions: [testFunction]
 }));
 
-// connect DB
+// MongoDB connect
 await connectDB();
 
-// ❗ Vercel ke liye export karna zaroori
+// Vercel ke liye export
 export default app;
