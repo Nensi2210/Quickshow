@@ -1,11 +1,11 @@
-// server.js
+// server/server.js
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import connectDB from './configs/db.js';
+import connectDB from '../configs/db.js';
 import { clerkMiddleware } from '@clerk/express';
 import { serve } from 'inngest/express';
-import { Inngest } from 'inngest';
+import { inngest, functions } from '../inngest/index.js';
 
 dotenv.config();
 
@@ -19,26 +19,7 @@ app.use(clerkMiddleware());
 // Test route
 app.get('/', (req, res) => res.send('Server is live!'));
 
-// Inngest client
-const inngest = new Inngest({ id: "quickshow-app" });
-
-// Simple Inngest test function
-const testFunction = inngest.createFunction(
-  { id: "test-function" },
-  { event: "test/event" },
-  async ({ event }) => {
-    try {
-      console.log("Event received:", event);
-      return { message: "Inngest working 🚀" };
-    } catch (err) {
-      console.error("Error in Inngest function:", err);
-      throw err;
-    }
-  }
-);
-
-// MongoDB connect
-// For serverless, ensure connection is async-friendly
+// Serverless-friendly MongoDB connection
 let isConnected = false;
 async function connectMongo() {
   if (!isConnected) {
@@ -48,15 +29,13 @@ async function connectMongo() {
   }
 }
 
-// Inngest route with MongoDB connection
+// Inngest route
 app.use('/api/inngest', serve({
   client: inngest,
-  functions: [testFunction],
+  functions,
   onRequest: async () => {
-    // Connect DB before handling any Inngest event
-    await connectMongo();
+    await connectMongo(); // ensure DB connected before handling event
   }
 }));
 
-// Vercel ke liye export
-export default app;
+export default app; // Vercel ke liye
