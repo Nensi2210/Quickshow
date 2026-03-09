@@ -1,22 +1,22 @@
 import mongoose from "mongoose";
 
 const connectDB = async () => {
-  console.log("Trying to connect to MongoDB..."); // 🔹 debug
+  console.log("Trying to connect to MongoDB..."); 
 
   try {
     mongoose.connection.on("connected", () => {
-      console.log("Database connected ✅");
+      console.log("Database connected ");
     });
 
     mongoose.connection.on("error", (err) => {
-      console.error("MongoDB connection error ❌", err.message);
+      console.error("MongoDB connection error ", err.message);
     });
 
     await mongoose.connect(process.env.MONGODB_URI);
-    console.log("mongoose.connect() resolved"); // 🔹 debug
+    console.log("mongoose.connect() resolved"); 
 
   } catch (error) {
-    console.error("MongoDB Error ❌", error.message);
+    console.error("MongoDB Error ", error.message);
   }
 };
 
